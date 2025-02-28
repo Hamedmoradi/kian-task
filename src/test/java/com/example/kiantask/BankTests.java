@@ -34,7 +34,7 @@ public class BankTests {
     }
 
     @Test
-    public void testCreateAccount_Success() throws Exception {
+    public void testCreateAccount_Success() {
         BankAccount account = bank.createAccount("789", "Charlie", 300.0);
         assertEquals("789", account.getAccountNumber());
         assertEquals("Charlie", account.getAccountHolderName());
@@ -166,7 +166,7 @@ public class BankTests {
     @Test
 //    @Transactional(rollbackOn = Exception.class) // Explicit rollback
     @Transactional // Explicit rollback
-    public void testSetBalance_NegativeValue() throws Exception {
+    public void testSetBalance_NegativeValue() {
         BankAccount account = repository.findByAccountNumber("123").get();
         account.setBalance(-50.0);
         assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
@@ -177,7 +177,7 @@ public class BankTests {
     @Test
 //    @Transactional(rollbackOn = Exception.class) // Explicit rollback
     @Transactional
-    public void testSetBalance_ZeroValue() throws Exception {
+    public void testSetBalance_ZeroValue() {
         BankAccount account = repository.findByAccountNumber("123").get();
         account.setBalance(0.0);
         assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {

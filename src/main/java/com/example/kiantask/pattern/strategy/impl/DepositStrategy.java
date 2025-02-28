@@ -7,7 +7,7 @@ import com.example.kiantask.repository.BankAccountRepository;
 
 public class DepositStrategy implements TransactionStrategy {
     @Override
-    public void execute(BankAccountRepository repository, String accountNumber, double amount, String targetAccountNumber) throws Exception {
+    public void execute(BankAccountRepository repository, String accountNumber, double amount, String targetAccountNumber) {
         BankAccount account = repository.findByAccountNumber(accountNumber)
                 .orElseThrow(AccountNotFoundException::new);
         account.setBalance(account.getBalance() + amount);

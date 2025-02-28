@@ -9,7 +9,7 @@ import com.example.kiantask.repository.BankAccountRepository;
 
 public class TransferStrategy implements TransactionStrategy {
     @Override
-    public void execute(BankAccountRepository repository, String fromAccountNumber, double amount, String toAccountNumber) throws Exception {
+    public void execute(BankAccountRepository repository, String fromAccountNumber, double amount, String toAccountNumber) {
         BankAccount sourceAccount = repository.findByAccountNumber(fromAccountNumber)
                 .orElseThrow(AccountNotFoundException::new);
         BankAccount destinationAccount = repository.findByAccountNumber(toAccountNumber)

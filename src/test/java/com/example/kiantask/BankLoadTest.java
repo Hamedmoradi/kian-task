@@ -29,7 +29,7 @@ public class BankLoadTest {
     private BankAccountRepository repository;
 
     @BeforeAll
-    public static void setupAccounts(@Autowired Bank bank, @Autowired BankAccountRepository repository) throws Exception {
+    public static void setupAccounts(@Autowired Bank bank, @Autowired BankAccountRepository repository) {
         repository.deleteAll();
         bank.createAccount("123", "Alice", 1000.0);
         bank.createAccount("456", "Bob", 100.0);

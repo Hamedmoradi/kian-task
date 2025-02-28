@@ -1,14 +1,9 @@
 package com.example.kiantask.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum GeneralExceptionEnums {
-    //    ACCOUNT_GENERAL_EXCEPTION_CODE(2015_500_000, "ACCOUNT_GENERAL_EXCEPTION_CODE"),
-//    SAVE_TRANSACTION_EXCEPTION_CODE(2015_500_001, "SAVE_TRANSACTION_EXCEPTION_CODE"),
-//    DELETE_ACCOUNT_EXCEPTION_CODE(2015_500_002, "DELETE_ACCOUNT_EXCEPTION_CODE"),
-//    SAVE_ACCOUNT_EXCEPTION_CODE(2015_500_003, "SAVE_ACCOUNT_EXCEPTION_CODE"),
-//    SAVE_MULTI_ACCOUNT_EXCEPTION_CODE(2015_500_004, "SAVE_MULTI_ACCOUNT_EXCEPTION_CODE"),
-//    DELETE_MULTI_ACCOUNT_EXCEPTION_CODE(2015_500_005, "DELETE_MULTI_ACCOUNT_EXCEPTION_CODE"),
-//    PARSE_TRANSACTION_TEMPLATE_EXCEPTION_CODE(2015_500_006, "PARSE_TRANSACTION_TEMPLATE_EXCEPTION_CODE"),
-//    SUM_OF_JR_TYPE_FOR_ACCOUNT_EXCEPTION_CODE(2015_500_007, "SUM_OF_JR_TYPE_FOR_ACCOUNT_EXCEPTION_CODE"),
     ACCOUNT_NOT_FOUND_EXCEPTION_CODE(100001, "account not found"),
     ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE(100002, "Account number cannot be null or empty"),
     ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE(100003, "Account holder name cannot be null or empty"),
@@ -28,13 +23,4 @@ public enum GeneralExceptionEnums {
         this.code = code;
         this.message = message;
     }
-
-    public String getMessage() {
-        return this.message;
-    }
-
-    public int getCode() {
-        return this.code;
-    }
-
 }

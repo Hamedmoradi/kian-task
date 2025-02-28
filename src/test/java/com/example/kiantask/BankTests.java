@@ -43,74 +43,60 @@ public class BankTests {
 
     @Test
     public void testCreateAccount_NullAccountNumber() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            bank.createAccount(null, "Alice", 100.0);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.createAccount(null, "Alice", 100.0));
         assertEquals("Account number cannot be null or empty", exception.getMessage());
     }
 
     @Test
     public void testCreateAccount_EmptyAccountNumber() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            bank.createAccount("", "Alice", 100.0);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.createAccount("", "Alice", 100.0));
         assertEquals("Account number cannot be null or empty", exception.getMessage());
     }
 
     @Test
     public void testCreateAccount_NegativeBalance() {
-        jakarta.validation.ConstraintViolationException exception = assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
-            bank.createAccount("789", "Charlie", -50.0);
-        });
+        jakarta.validation.ConstraintViolationException exception = assertThrows(jakarta.validation.ConstraintViolationException.class, () -> bank.createAccount("789", "Charlie", -50.0));
         assertTrue(exception.getMessage().contains("Balance must be greater than zero"));
     }
 
     @Test
     public void testCreateAccount_DuplicateAccount() {
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-            bank.createAccount("123", "Bob", 200.0);
-        });
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> bank.createAccount("123", "Bob", 200.0));
         assertEquals("Account number already exists", exception.getMessage());
     }
 
     @Test
-    public void testDeposit_Success() throws Exception {
+    public void testDeposit_Success() {
         bank.deposit("123", 50.0);
         assertEquals(1050.0, bank.getBalance("123"), 0.01);
     }
 
     @Test
     public void testDeposit_NonExistentAccount() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            bank.deposit("999", 50.0);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.deposit("999", 50.0));
         assertEquals("Account not found", exception.getMessage());
     }
 
     @Test
     public void testDeposit_NegativeAmount() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            bank.deposit("123", -50.0);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.deposit("123", -50.0));
         assertEquals("Transaction amount must be positive", exception.getMessage());
     }
 
     @Test
-    public void testWithdraw_Success() throws Exception {
+    public void testWithdraw_Success() {
         bank.withdraw("123", 50.0);
         assertEquals(950.0, bank.getBalance("123"), 0.01);
     }
 
     @Test
     public void testWithdraw_InsufficientFunds() {
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-            bank.withdraw("123", 1500.0);
-        });
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> bank.withdraw("123", 1500.0));
         assertEquals("Insufficient funds", exception.getMessage());
     }
 
     @Test
-    public void testTransfer_Success() throws Exception {
+    public void testTransfer_Success() {
         bank.transfer("123", "456", 50.0);
         assertEquals(950.0, bank.getBalance("123"), 0.01);
         assertEquals(150.0, bank.getBalance("456"), 0.01);
@@ -118,17 +104,13 @@ public class BankTests {
 
     @Test
     public void testTransfer_SameAccount() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            bank.transfer("123", "123", 50.0);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.transfer("123", "123", 50.0));
         assertEquals("Cannot transfer to the same account", exception.getMessage());
     }
 
     @Test
     public void testTransfer_InsufficientFunds() {
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-            bank.transfer("123", "456", 1500.0);
-        });
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> bank.transfer("123", "456", 1500.0));
         assertEquals("Insufficient funds in from account", exception.getMessage());
     }
 
@@ -140,9 +122,7 @@ public class BankTests {
 
     @Test
     public void testGetBalance_NonExistentAccount() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            bank.getBalance("999");
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.getBalance("999"));
         assertEquals("Account not found", exception.getMessage());
     }
 

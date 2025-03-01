@@ -38,8 +38,10 @@ public class BankTests {
         try {
             BankAccount account1 = new BankAccount("123", "Alice", 1000.0);
             BankAccount account2 = new BankAccount("456", "Bob", 100.0);
+            BankAccount account3 = new BankAccount("789", "Sam", 200.0);
             repository.saveAndFlush(account1);
             repository.saveAndFlush(account2);
+            repository.saveAndFlush(account3);
             System.out.println("Accounts after setup: " + repository.findAll());
         } catch (Exception e) {
             throw new RuntimeException("Failed to set up accounts: " + e.getMessage(), e);
@@ -64,9 +66,11 @@ public class BankTests {
     @Test
     public void testTransactionLogger_LogsCorrectFormat() throws Exception {
         TransactionLogger logger = new TransactionLogger();
-        String accountNumber = "123";
+        String accountNumber = "789";
         String transactionType = "DEPOSIT";
-        double amount = 50.0;
+        double amount = 505.0;
+        bank.deposit(accountNumber, amount);
+
         logger.onTransaction(accountNumber, transactionType, amount);
 
         Thread.sleep(100); // Ensure flush

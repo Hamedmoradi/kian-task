@@ -1,11 +1,8 @@
-package com.example.kiantask.service;
+package com.example.kiantask.service;//package com.example.kiantask.service;
 
 import com.example.kiantask.domain.BankAccount;
 import com.example.kiantask.enums.TransactionTypeEnum;
-import com.example.kiantask.exceptionHandler.AccountNotFoundException;
-import com.example.kiantask.exceptionHandler.AccountNumberIsAlreadyExistException;
-import com.example.kiantask.exceptionHandler.AccountNumberIsNotNullOrEmptyException;
-import com.example.kiantask.exceptionHandler.SourceAndDestinationAccountAreTheSameException;
+import com.example.kiantask.exceptionHandler.*;
 import com.example.kiantask.pattern.observer.TransactionObserver;
 import com.example.kiantask.pattern.observer.impl.TransactionLogger;
 import com.example.kiantask.pattern.strategy.TransactionStrategy;
@@ -13,10 +10,11 @@ import com.example.kiantask.pattern.strategy.impl.DepositStrategy;
 import com.example.kiantask.pattern.strategy.impl.TransferStrategy;
 import com.example.kiantask.pattern.strategy.impl.WithdrawalStrategy;
 import com.example.kiantask.repository.BankAccountRepository;
-import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +46,7 @@ public class Bank {
     }
 
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @SneakyThrows
     public void performTransaction(TransactionStrategy strategy, String accountNumber, double amount, String targetAccountNumber, String transactionType) {
         checkAmount(amount);
@@ -60,7 +58,7 @@ public class Bank {
     }
 
 
-    public double getBalance(String accountNumber) throws IllegalArgumentException {
+    public double getBalance(String accountNumber) {
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
             throw new AccountNumberIsNotNullOrEmptyException();
         }
@@ -94,5 +92,33 @@ public class Bank {
             throw new SourceAndDestinationAccountAreTheSameException();
         }
         performTransaction(new TransferStrategy(), fromAccountNumber, amount, toAccountNumber, TransactionTypeEnum.TRANSFER.getValue());
+    }
+
+    private void retryTransaction(Runnable transaction, String type, String accountNumber, double amount) {
+        int retries = 5;
+        TransactionLogger logger = new TransactionLogger();
+        for (int i = 0; i < retries; i++) {
+            try {
+                transaction.run();
+                logger.onTransaction(accountNumber, type, amount);
+                return;
+            } catch (Exception e) {
+                if (i == retries - 1 || !isRetryable(e)) {
+                    System.err.println(type + " failed after retries: " + e.getMessage());
+                    throw e;
+                }
+                try {
+                    Thread.sleep(100 * (i + 1)); // Exponential backoff
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(ie);
+                }
+            }
+        }
+    }
+
+    private boolean isRetryable(Exception e) {
+        return e instanceof org.springframework.dao.ConcurrencyFailureException ||
+                e.getMessage().contains("Deadlock detected");
     }
 }

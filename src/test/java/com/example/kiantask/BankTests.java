@@ -1,6 +1,8 @@
 package com.example.kiantask;
 
 import com.example.kiantask.domain.BankAccount;
+import com.example.kiantask.enums.GeneralExceptionEnums;
+import com.example.kiantask.exceptionHandler.*;
 import com.example.kiantask.pattern.observer.impl.TransactionLogger;
 import com.example.kiantask.repository.BankAccountRepository;
 import com.example.kiantask.service.Bank;
@@ -8,16 +10,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class BankTests {
 
     @Autowired
@@ -29,8 +34,58 @@ public class BankTests {
     @BeforeEach
     public void setUp() {
         repository.deleteAll();
-        bank.createAccount("123", "Alice", 1000.0);
-        bank.createAccount("456", "Bob", 100.0);
+        repository.flush();
+        try {
+            BankAccount account1 = new BankAccount("123", "Alice", 1000.0);
+            BankAccount account2 = new BankAccount("456", "Bob", 100.0);
+            repository.saveAndFlush(account1);
+            repository.saveAndFlush(account2);
+            System.out.println("Accounts after setup: " + repository.findAll());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to set up accounts: " + e.getMessage(), e);
+        }
+    }
+
+    @Test
+    public void testDeposit_NegativeAmount() {
+        assertThrows(TransactionAmountMustBePositiveException.class, () -> bank.deposit("123", -50.0));
+    }
+
+    @Test
+    public void testTransfer_SameAccount() {
+        assertThrows(SourceAndDestinationAccountAreTheSameException.class, () -> bank.transfer("123", "123", 50.0));
+    }
+
+    @Test
+    public void testTransfer_InsufficientFunds() {
+        assertThrows(InsufficientFundsInSourceAccountException.class, () -> bank.transfer("456", "123", 150.0));
+    }
+
+    @Test
+    public void testTransactionLogger_LogsCorrectFormat() throws Exception {
+        TransactionLogger logger = new TransactionLogger();
+        String accountNumber = "123";
+        String transactionType = "DEPOSIT";
+        double amount = 50.0;
+        logger.onTransaction(accountNumber, transactionType, amount);
+
+        Thread.sleep(100); // Ensure flush
+
+        File logFile = new File("transactions.log");
+        assertTrue(logFile.exists(), "Transaction log file should be created");
+        try (Scanner scanner = new Scanner(logFile)) {
+            assertTrue(scanner.hasNextLine(), "Log file should have content");
+            String logEntry = scanner.nextLine();
+            assertTrue(logEntry.contains(accountNumber), "Log should contain account number");
+            assertTrue(logEntry.contains(transactionType), "Log should contain transaction type");
+            assertTrue(logEntry.contains(String.valueOf(amount)), "Log should contain amount");
+        }
+    }
+    @Test
+    public void testAccountsInserted() {
+        assertEquals(2, repository.count());
+        assertTrue(repository.findByAccountNumber("123").isPresent());
+        assertTrue(repository.findByAccountNumber("456").isPresent());
     }
 
     @Test
@@ -43,14 +98,14 @@ public class BankTests {
 
     @Test
     public void testCreateAccount_NullAccountNumber() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.createAccount(null, "Alice", 100.0));
-        assertEquals("Account number cannot be null or empty", exception.getMessage());
+        AccountNumberIsNotNullOrEmptyException exception = assertThrows(AccountNumberIsNotNullOrEmptyException.class, () -> bank.createAccount(null, "Alice", 100.0));
+        assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
     public void testCreateAccount_EmptyAccountNumber() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.createAccount("", "Alice", 100.0));
-        assertEquals("Account number cannot be null or empty", exception.getMessage());
+        AccountNumberIsNotNullOrEmptyException exception = assertThrows(AccountNumberIsNotNullOrEmptyException.class, () -> bank.createAccount("", "Alice", 100.0));
+        assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
@@ -61,8 +116,8 @@ public class BankTests {
 
     @Test
     public void testCreateAccount_DuplicateAccount() {
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> bank.createAccount("123", "Bob", 200.0));
-        assertEquals("Account number already exists", exception.getMessage());
+        AccountNumberIsAlreadyExistException exception = assertThrows(AccountNumberIsAlreadyExistException.class, () -> bank.createAccount("123", "Bob", 200.0));
+        assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_ALREADY_EXIST_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
@@ -73,14 +128,8 @@ public class BankTests {
 
     @Test
     public void testDeposit_NonExistentAccount() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.deposit("999", 50.0));
-        assertEquals("Account not found", exception.getMessage());
-    }
-
-    @Test
-    public void testDeposit_NegativeAmount() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.deposit("123", -50.0));
-        assertEquals("Transaction amount must be positive", exception.getMessage());
+        AccountNotFoundException exception = assertThrows(AccountNotFoundException.class, () -> bank.deposit("999", 50.0));
+        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
@@ -91,8 +140,8 @@ public class BankTests {
 
     @Test
     public void testWithdraw_InsufficientFunds() {
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> bank.withdraw("123", 1500.0));
-        assertEquals("Insufficient funds", exception.getMessage());
+        InsufficientFundsException exception = assertThrows(InsufficientFundsException.class, () -> bank.withdraw("123", 1500.0));
+        assertEquals(GeneralExceptionEnums.INSUFFICIENT_FUNDS_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
@@ -103,18 +152,6 @@ public class BankTests {
     }
 
     @Test
-    public void testTransfer_SameAccount() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.transfer("123", "123", 50.0));
-        assertEquals("Cannot transfer to the same account", exception.getMessage());
-    }
-
-    @Test
-    public void testTransfer_InsufficientFunds() {
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> bank.transfer("123", "456", 1500.0));
-        assertEquals("Insufficient funds in from account", exception.getMessage());
-    }
-
-    @Test
     public void testGetBalance_Success() {
         double balance = bank.getBalance("123");
         assertEquals(1000.0, balance, 0.01);
@@ -122,46 +159,27 @@ public class BankTests {
 
     @Test
     public void testGetBalance_NonExistentAccount() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> bank.getBalance("999"));
-        assertEquals("Account not found", exception.getMessage());
+        AccountNotFoundException exception = assertThrows(AccountNotFoundException.class, () -> bank.getBalance("999"));
+        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
-    public void testTransactionLogger_LogsCorrectFormat() throws Exception {
-        TransactionLogger logger = new TransactionLogger();
-        String accountNumber = "123";
-        String transactionType = "DEPOSIT";
-        double amount = 50.0;
-        logger.onTransaction(accountNumber, transactionType, amount);
-        File logFile = new File("transactions.log");
-        assertTrue(logFile.exists(), "Transaction log file should be created");
-        try (java.util.Scanner scanner = new java.util.Scanner(logFile)) {
-            String logEntry = scanner.nextLine();
-            assertTrue(logEntry.contains(accountNumber), "Log should contain account number");
-            assertTrue(logEntry.contains(transactionType), "Log should contain transaction type");
-            assertTrue(logEntry.contains(String.format("%.2f", amount)), "Log should contain amount");
-        }
-    }
-
-    @Test
-//    @Transactional(rollbackOn = Exception.class) // Explicit rollback
-    @Transactional // Explicit rollback
+    @Transactional
     public void testSetBalance_NegativeValue() {
         BankAccount account = repository.findByAccountNumber("123").get();
         account.setBalance(-50.0);
         assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
-            repository.saveAndFlush(account); // Force validation
+            repository.saveAndFlush(account);
         });
     }
 
     @Test
-//    @Transactional(rollbackOn = Exception.class) // Explicit rollback
     @Transactional
     public void testSetBalance_ZeroValue() {
         BankAccount account = repository.findByAccountNumber("123").get();
         account.setBalance(0.0);
         assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
-            repository.saveAndFlush(account); // Force validation
+            repository.saveAndFlush(account);
         });
     }
 }

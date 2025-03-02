@@ -3,7 +3,6 @@ package com.example.kiantask;
 import com.example.kiantask.domain.BankAccount;
 import com.example.kiantask.exceptionHandler.AccountNotFoundException;
 import com.example.kiantask.exceptionHandler.InsufficientFundsException;
-import com.example.kiantask.exceptionHandler.TransactionAmountMustBePositiveException;
 import com.example.kiantask.pattern.strategy.impl.WithdrawalStrategy;
 import com.example.kiantask.repository.BankAccountRepository;
 import org.junit.jupiter.api.BeforeEach;

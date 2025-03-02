@@ -29,14 +29,14 @@ import static com.example.kiantask.util.validator.AccountValidator.validateAccou
 
 @Service
 public class Bank {
-    @Autowired
-    private BankAccountRepository repository;
+    private final BankAccountRepository repository;
     private final List<TransactionObserver> observers = new ArrayList<>();
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private final ReentrantLock lock = new ReentrantLock(); // Added for synchronization
 
-    public Bank() {
+    public Bank(BankAccountRepository repository) {
         observers.add(new TransactionLogger());
+        this.repository = repository;
     }
 
     @Transactional

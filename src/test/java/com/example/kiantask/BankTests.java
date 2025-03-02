@@ -15,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -161,9 +160,7 @@ public class BankTests {
     public void testSetBalance_NegativeValue() {
         BankAccount account = repository.findByAccountNumber("123").get();
         account.setBalance(-50.0);
-        assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
-            repository.saveAndFlush(account);
-        });
+        assertThrows(jakarta.validation.ConstraintViolationException.class, () -> repository.saveAndFlush(account));
     }
 
     @Test
@@ -171,8 +168,6 @@ public class BankTests {
     public void testSetBalance_ZeroValue() {
         BankAccount account = repository.findByAccountNumber("123").get();
         account.setBalance(0.0);
-        assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
-            repository.saveAndFlush(account);
-        });
+        assertThrows(jakarta.validation.ConstraintViolationException.class, () -> repository.saveAndFlush(account));
     }
 }

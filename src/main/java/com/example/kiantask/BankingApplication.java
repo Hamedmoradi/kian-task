@@ -28,55 +28,7 @@ public class BankingApplication {
                         int choice = scanner.nextInt();
                         scanner.nextLine();
 
-                        switch (choice) {
-                            case 1:
-                                System.out.print("Account Number: ");
-                                String accNum = scanner.nextLine();
-                                System.out.print("Holder Name: ");
-                                String name = scanner.nextLine();
-                                System.out.print("Initial Balance: ");
-                                double balance = scanner.nextDouble();
-                                bank.createAccount(accNum, name, balance);
-                                System.out.println("Account created!");
-                                break;
-                            case 2:
-                                System.out.print("Account Number: ");
-                                String depositAcc = scanner.nextLine();
-                                System.out.print("Amount: ");
-                                double depositAmt = scanner.nextDouble();
-                                bank.deposit(depositAcc, depositAmt);
-                                System.out.println("Deposit successful!");
-                                break;
-                            case 3:
-                                System.out.print("Account Number: ");
-                                String withdrawAcc = scanner.nextLine();
-                                System.out.print("Amount: ");
-                                double withdrawAmt = scanner.nextDouble();
-                                bank.withdraw(withdrawAcc, withdrawAmt);
-                                System.out.println("Withdrawal successful!");
-                                break;
-                            case 4:
-                                System.out.print("From Account Number: ");
-                                String fromAcc = scanner.nextLine();
-                                System.out.print("To Account Number: ");
-                                String toAcc = scanner.nextLine();
-                                System.out.print("Amount: ");
-                                double transferAmt = scanner.nextDouble();
-                                bank.transfer(fromAcc, toAcc, transferAmt);
-                                System.out.println("Transfer successful!");
-                                break;
-                            case 5:
-                                System.out.print("Account Number: ");
-                                String checkAcc = scanner.nextLine();
-                                System.out.println("Balance: " + bank.getBalance(checkAcc));
-                                break;
-                            case 6:
-                                System.out.println("Exiting...");
-                                scanner.close();
-                                System.exit(0);
-                            default:
-                                System.out.println("Invalid option! Please choose between 1 and 6.");
-                        }
+                        selectCommand(bank, choice, scanner);
                     } catch (InputMismatchException e) {
                         System.out.println("Error: Please enter a valid number.");
                         scanner.nextLine();
@@ -90,6 +42,58 @@ public class BankingApplication {
                 }
             }
         };
+    }
+
+    static void selectCommand(Bank bank, int choice, Scanner scanner) {
+        switch (choice) {
+            case 1:
+                System.out.print("Account Number: ");
+                String accNum = scanner.nextLine();
+                System.out.print("Holder Name: ");
+                String name = scanner.nextLine();
+                System.out.print("Initial Balance: ");
+                double balance = scanner.nextDouble();
+                bank.createAccount(accNum, name, balance);
+                System.out.println("Account created!");
+                break;
+            case 2:
+                System.out.print("Account Number: ");
+                String depositAcc = scanner.nextLine();
+                System.out.print("Amount: ");
+                double depositAmt = scanner.nextDouble();
+                bank.deposit(depositAcc, depositAmt);
+                System.out.println("Deposit successful!");
+                break;
+            case 3:
+                System.out.print("Account Number: ");
+                String withdrawAcc = scanner.nextLine();
+                System.out.print("Amount: ");
+                double withdrawAmt = scanner.nextDouble();
+                bank.withdraw(withdrawAcc, withdrawAmt);
+                System.out.println("Withdrawal successful!");
+                break;
+            case 4:
+                System.out.print("From Account Number: ");
+                String fromAcc = scanner.nextLine();
+                System.out.print("To Account Number: ");
+                String toAcc = scanner.nextLine();
+                System.out.print("Amount: ");
+                double transferAmt = scanner.nextDouble();
+                bank.transfer(fromAcc, toAcc, transferAmt);
+                System.out.println("Transfer successful!");
+                break;
+            case 5:
+                System.out.print("Account Number: ");
+                String checkAcc = scanner.nextLine();
+                System.out.println("Balance: " + bank.getBalance(checkAcc));
+                break;
+            case 6:
+                System.out.println("Exiting...");
+                scanner.close();
+                System.exit(0);
+            default:
+                System.out.println("Invalid option! Please choose between 1 and 6.");
+        }
     }
 
     private void displayMenu() {

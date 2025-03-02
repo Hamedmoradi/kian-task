@@ -15,7 +15,7 @@ public class AccountHolderIsNotNullOrEmptyExceptionTest {
         assertEquals(GeneralExceptionEnums.ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(),
                 exception.getMessage(), "Message should match enum value");
         assertEquals(GeneralExceptionEnums.ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getCode(),
-                exception.getMessageCode(), "Code should match enum value");
+                exception.getCode(), "Code should match enum value");
         assertNull(exception.getCause(), "Cause should be null in default constructor");
     }
 
@@ -29,7 +29,7 @@ public class AccountHolderIsNotNullOrEmptyExceptionTest {
         assertEquals(GeneralExceptionEnums.ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(),
                 exception.getMessage(), "Message should match enum value");
         assertEquals(GeneralExceptionEnums.ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getCode(),
-                exception.getMessageCode(), "Code should match enum value");
+                exception.getCode(), "Code should match enum value");
         assertEquals(cause, exception.getCause(), "Cause should match the provided throwable");
         assertEquals("Test cause", exception.getCause().getMessage(), "Cause message should match");
     }

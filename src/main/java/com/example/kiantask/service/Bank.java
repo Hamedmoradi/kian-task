@@ -1,8 +1,11 @@
-package com.example.kiantask.service;//package com.example.kiantask.service;
+package com.example.kiantask.service;
 
 import com.example.kiantask.domain.BankAccount;
 import com.example.kiantask.enums.TransactionTypeEnum;
-import com.example.kiantask.exceptionHandler.*;
+import com.example.kiantask.exceptionHandler.AccountNotFoundException;
+import com.example.kiantask.exceptionHandler.AccountNumberIsAlreadyExistException;
+import com.example.kiantask.exceptionHandler.AccountNumberIsNotNullOrEmptyException;
+import com.example.kiantask.exceptionHandler.SourceAndDestinationAccountAreTheSameException;
 import com.example.kiantask.pattern.observer.TransactionObserver;
 import com.example.kiantask.pattern.observer.impl.TransactionLogger;
 import com.example.kiantask.pattern.strategy.TransactionStrategy;
@@ -13,13 +16,13 @@ import com.example.kiantask.repository.BankAccountRepository;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.example.kiantask.util.validation.AccountValidator.checkAmount;
 import static com.example.kiantask.util.validation.AccountValidator.validateAccountDetail;
@@ -30,6 +33,7 @@ public class Bank {
     private BankAccountRepository repository;
     private final List<TransactionObserver> observers = new ArrayList<>();
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private final ReentrantLock lock = new ReentrantLock(); // Added for synchronization
 
     public Bank() {
         observers.add(new TransactionLogger());
@@ -38,25 +42,29 @@ public class Bank {
     @Transactional
     @SneakyThrows
     public BankAccount createAccount(String accountNumber, String accountHolderName, double initialBalance) {
-        validateAccountDetail(accountNumber, accountHolderName);//TODO
-        if (repository.existsByAccountNumber(accountNumber)) {//TODO
-            throw new AccountNumberIsAlreadyExistException();
-        }
+        validateAccountDetail(accountNumber, accountHolderName);
+        isAccountExist(accountNumber);
         return repository.save(new BankAccount(accountNumber, accountHolderName, initialBalance));
     }
 
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+
     @SneakyThrows
-    public void performTransaction(TransactionStrategy strategy, String accountNumber, double amount, String targetAccountNumber, String transactionType) {
+    public void performTransaction(TransactionStrategy strategy, String sourceAccount, double amount, String destinationAccount, String transactionType) {
         checkAmount(amount);
-        strategy.execute(repository, accountNumber, amount, targetAccountNumber);
-        notifyObservers(accountNumber, transactionType, amount);
-        if (TransactionTypeEnum.TRANSFER.getValue().equals(transactionType) && targetAccountNumber != null) {
-            notifyObservers(targetAccountNumber, TransactionTypeEnum.TRANSFER_IN.getValue(), amount);
+        lock.lock(); // Synchronize access to prevent concurrent updates
+        try {
+            retryTransaction(() -> {
+                strategy.execute(repository, sourceAccount, amount, destinationAccount);
+                notifyObservers(sourceAccount, transactionType, amount);
+                if (TransactionTypeEnum.TRANSFER.getValue().equals(transactionType) && destinationAccount != null) {
+                    notifyObservers(destinationAccount, TransactionTypeEnum.TRANSFER_IN.getValue(), amount);
+                }
+            }, transactionType, sourceAccount, amount);
+        } finally {
+            lock.unlock();
         }
     }
-
 
     public double getBalance(String accountNumber) {
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
@@ -87,27 +95,26 @@ public class Bank {
         performTransaction(new WithdrawalStrategy(), accountNumber, amount, null, TransactionTypeEnum.WITHDRAW.getValue());
     }
 
-    public void transfer(String fromAccountNumber, String toAccountNumber, double amount) {
-        if (fromAccountNumber.equals(toAccountNumber)) {
+    public void transfer(String sourceAccount, String destinationAccount, double amount) {
+        if (sourceAccount.equals(destinationAccount)) {
             throw new SourceAndDestinationAccountAreTheSameException();
         }
-        performTransaction(new TransferStrategy(), fromAccountNumber, amount, toAccountNumber, TransactionTypeEnum.TRANSFER.getValue());
+        performTransaction(new TransferStrategy(), sourceAccount, amount, destinationAccount, TransactionTypeEnum.TRANSFER.getValue());
     }
 
     private void retryTransaction(Runnable transaction, String type, String accountNumber, double amount) {
         int retries = 5;
-        TransactionLogger logger = new TransactionLogger();
         for (int i = 0; i < retries; i++) {
             try {
                 transaction.run();
-                logger.onTransaction(accountNumber, type, amount);
                 return;
             } catch (Exception e) {
                 if (i == retries - 1 || !isRetryable(e)) {
-                    System.err.println(type + " failed after retries: " + e.getMessage());
+                    System.err.println(type + " failed after " + (i + 1) + " retries for account " + accountNumber + " with amount " + amount + " : " + e.getMessage());
                     throw e;
                 }
                 try {
+                    System.err.println(type + " attempt " + (i + 1) + " failed for account " + accountNumber + " with amount " + amount + " : " + e.getMessage() + " - Retrying...");
                     Thread.sleep(100 * (i + 1)); // Exponential backoff
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
@@ -119,6 +126,15 @@ public class Bank {
 
     private boolean isRetryable(Exception e) {
         return e instanceof org.springframework.dao.ConcurrencyFailureException ||
-                e.getMessage().contains("Deadlock detected");
+                e instanceof org.springframework.dao.PessimisticLockingFailureException ||
+                e.getMessage().contains("Deadlock detected") ||
+                e.getMessage().contains("Lock wait timeout") ||
+                e.getMessage().contains("could not obtain lock");
+    }
+
+    private void isAccountExist(String accountNumber) {
+        if (repository.existsByAccountNumber(accountNumber)) {
+            throw new AccountNumberIsAlreadyExistException();
+        }
     }
 }

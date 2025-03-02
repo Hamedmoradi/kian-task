@@ -5,8 +5,8 @@ import com.example.kiantask.exceptionHandler.AccountNotFoundException;
 import com.example.kiantask.pattern.strategy.TransactionStrategy;
 import com.example.kiantask.repository.BankAccountRepository;
 
-import static com.example.kiantask.util.validation.AccountValidator.checkAmount;
-import static com.example.kiantask.util.validation.AccountValidator.checkBalance;
+import static com.example.kiantask.util.validator.AccountValidator.checkAmount;
+import static com.example.kiantask.util.validator.AccountValidator.checkBalance;
 
 public class WithdrawalStrategy implements TransactionStrategy {
     @Override

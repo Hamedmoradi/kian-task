@@ -24,8 +24,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.example.kiantask.util.validation.AccountValidator.checkAmount;
-import static com.example.kiantask.util.validation.AccountValidator.validateAccountDetail;
+import static com.example.kiantask.util.validator.AccountValidator.checkAmount;
+import static com.example.kiantask.util.validator.AccountValidator.validateAccountDetail;
 
 @Service
 public class Bank {

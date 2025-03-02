@@ -130,4 +130,22 @@ class AccountValidatorTest {
                 () -> AccountValidator.checkBalance(amount, account),
                 "Insufficient funds should throw InsufficientFundsException");
     }
+
+    @Test
+    void testCheckBalanceZeroAmount() {
+        double amount = 0.0;
+        BankAccount account = Mockito.mock(BankAccount.class);
+        when(account.getBalance()).thenReturn(500.0);
+
+        assertDoesNotThrow(() -> AccountValidator.checkBalance(amount, account), "Zero amount should not throw an exception in checkBalance (only checks funds)");
+    }
+
+    @Test
+    void testCheckBalanceNegativeAmount() {
+        double amount = -50.0;
+        BankAccount account = Mockito.mock(BankAccount.class);
+        when(account.getBalance()).thenReturn(500.0);
+
+        assertDoesNotThrow(() -> AccountValidator.checkBalance(amount, account), "Negative amount should not throw an exception in checkBalance (only checks funds)");
+    }
 }

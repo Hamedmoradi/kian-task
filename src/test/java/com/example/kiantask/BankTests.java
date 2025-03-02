@@ -36,8 +36,8 @@ public class BankTests {
         repository.deleteAll();
         repository.flush();
         try {
-            BankAccount account1 = new BankAccount("123", "Alice", 1000.0);
-            BankAccount account2 = new BankAccount("456", "Bob", 100.0);
+            BankAccount account1 = new BankAccount("123", "Ali", 1000.0);
+            BankAccount account2 = new BankAccount("456", "Babak", 100.0);
             repository.saveAndFlush(account1);
             repository.saveAndFlush(account2);
             System.out.println("Accounts after setup: " + repository.findAll());
@@ -91,13 +91,13 @@ public class BankTests {
 
     @Test
     public void testCreateAccount_NullAccountNumber() {
-        AccountNumberIsNotNullOrEmptyException exception = assertThrows(AccountNumberIsNotNullOrEmptyException.class, () -> bank.createAccount(null, "Alice", 100.0));
+        AccountNumberIsNotNullOrEmptyException exception = assertThrows(AccountNumberIsNotNullOrEmptyException.class, () -> bank.createAccount(null, "Ali", 100.0));
         assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
     public void testCreateAccount_EmptyAccountNumber() {
-        AccountNumberIsNotNullOrEmptyException exception = assertThrows(AccountNumberIsNotNullOrEmptyException.class, () -> bank.createAccount("", "Alice", 100.0));
+        AccountNumberIsNotNullOrEmptyException exception = assertThrows(AccountNumberIsNotNullOrEmptyException.class, () -> bank.createAccount("", "Ali", 100.0));
         assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
@@ -109,7 +109,7 @@ public class BankTests {
 
     @Test
     public void testCreateAccount_DuplicateAccount() {
-        AccountNumberIsAlreadyExistException exception = assertThrows(AccountNumberIsAlreadyExistException.class, () -> bank.createAccount("123", "Bob", 200.0));
+        AccountNumberIsAlreadyExistException exception = assertThrows(AccountNumberIsAlreadyExistException.class, () -> bank.createAccount("123", "Babak", 200.0));
         assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_ALREADY_EXIST_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 

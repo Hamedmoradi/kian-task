@@ -1,6 +1,5 @@
 package com.example.kiantask;
 
-import com.example.kiantask.domain.BankAccount;
 import com.example.kiantask.repository.BankAccountRepository;
 import com.example.kiantask.service.Bank;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,24 +29,100 @@ public class BankLoadTest {
     public void setUp() {
         repository.deleteAll();
         repository.flush();
-        try {
-            BankAccount account1 = new BankAccount("123", "Alice", 1000.0);
-            BankAccount account2 = new BankAccount("456", "Bob", 100.0);
-            repository.saveAndFlush(account1);
-            repository.saveAndFlush(account2);
-            System.out.println("Accounts after setup: " + repository.findAll());
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to set up accounts: " + e.getMessage(), e);
-        }
+        bank.createAccount("123", "Ali", 1000.0);
+        bank.createAccount("456", "Babak", 100.0);
     }
 
     @Test
-    public void testConcurrentTransactions() throws InterruptedException {
-        int numThreads = 5; // Reduced to lessen contention
+    public void testConcurrentDeposits() throws InterruptedException {
+        int numThreads = 10;
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
-        CountDownLatch latch = new CountDownLatch(numThreads * 2);
+        CountDownLatch latch = new CountDownLatch(numThreads);
 
         for (int i = 0; i < numThreads; i++) {
+            executor.submit(() -> {
+                try {
+                    bank.deposit("123", 100.0);
+                } catch (Exception e) {
+                    System.err.println("Deposit failed: " + e.getMessage());
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await(10, TimeUnit.SECONDS);
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.SECONDS);
+
+        double finalBalance = bank.getBalance("123");
+        System.out.println("Final balance after concurrent deposits: " + finalBalance);
+        assertEquals(2000.0, finalBalance, 0.01, "Balance should reflect 10 deposits of 100.0 each (1000 + 1000)");
+    }
+
+    @Test
+    public void testConcurrentWithdrawals() throws InterruptedException {
+        int numThreads = 5;
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        CountDownLatch latch = new CountDownLatch(numThreads);
+
+        for (int i = 0; i < numThreads; i++) {
+            executor.submit(() -> {
+                try {
+                    bank.withdraw("123", 100.0);
+                } catch (Exception e) {
+                    System.err.println("Withdrawal failed: " + e.getMessage());
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await(10, TimeUnit.SECONDS);
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.SECONDS);
+
+        double finalBalance = bank.getBalance("123");
+        System.out.println("Final balance after concurrent withdrawals: " + finalBalance);
+        assertEquals(500.0, finalBalance, 0.01, "Balance should reflect 5 withdrawals of 100.0 each (1000 - 500)");
+    }
+
+    @Test
+    public void testConcurrentTransfers() throws InterruptedException {
+        int numThreads = 5;
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        CountDownLatch latch = new CountDownLatch(numThreads);
+
+        for (int i = 0; i < numThreads; i++) {
+            executor.submit(() -> {
+                try {
+                    bank.transfer("123", "456", 50.0);
+                } catch (Exception e) {
+                    System.err.println("Transfer failed: " + e.getMessage());
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await(10, TimeUnit.SECONDS);
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.SECONDS);
+
+        double fromBalance = bank.getBalance("123");
+        double toBalance = bank.getBalance("456");
+        System.out.println("From balance: " + fromBalance + ", To balance: " + toBalance);
+        assertEquals(750.0, fromBalance, 0.01, "From account should reflect 5 transfers of 50.0 (1000 - 250)");
+        assertEquals(350.0, toBalance, 0.01, "To account should reflect 5 transfers of 50.0 (100 + 250)");
+    }
+
+    @Test
+    public void testMixedConcurrentTransactions() throws InterruptedException {
+        int numThreads = 10;
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        CountDownLatch latch = new CountDownLatch(numThreads);
+
+        for (int i = 0; i < 5; i++) {
             executor.submit(() -> {
                 try {
                     bank.deposit("123", 100.0);
@@ -68,41 +143,37 @@ public class BankLoadTest {
             });
         }
 
-        latch.await(10, TimeUnit.SECONDS); // Reduced timeout
+        latch.await(10, TimeUnit.SECONDS);
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
 
         double finalBalance = bank.getBalance("123");
-        System.out.println("Final balance after concurrent transactions: " + finalBalance);
-        assertEquals(1250.0, finalBalance, 0.01, "Balance should reflect concurrent transactions");
+        System.out.println("Final balance after mixed concurrent transactions: " + finalBalance);
+        assertEquals(1250.0, finalBalance, 0.01, "Balance should reflect 5 deposits of 100.0 and 5 withdrawals of 50.0 (1000 + 500 - 250)");
     }
 
     @Test
-    public void testConcurrentTransfers() throws InterruptedException {
-        int numThreads = 5; // Reduced to lessen contention
+    public void testRetryOnConcurrencyFailure() throws InterruptedException {
+        int numThreads = 10;
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         CountDownLatch latch = new CountDownLatch(numThreads);
 
         for (int i = 0; i < numThreads; i++) {
             executor.submit(() -> {
                 try {
-                    bank.transfer("123", "456", 50.0);
+                    bank.deposit("123", 10.0);
                 } catch (Exception e) {
-                    System.err.println("Transfer failed: " + e.getMessage());
+                    System.err.println("Deposit failed: " + e.getMessage());
                 } finally {
                     latch.countDown();
                 }
             });
         }
 
-        latch.await(10, TimeUnit.SECONDS); // Reduced timeout
+        latch.await(10, TimeUnit.SECONDS);
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
 
-        double fromBalance = bank.getBalance("123");
-        double toBalance = bank.getBalance("456");
-        System.out.println("From balance: " + fromBalance + ", To balance: " + toBalance);
-        assertEquals(750.0, fromBalance, 0.01, "From account balance incorrect"); // 1000 - (5 × 50)
-        assertEquals(350.0, toBalance, 0.01, "To account balance incorrect");     // 100 + (5 × 50)
+        assertEquals(1100.0, bank.getBalance("123"), 0.01, "Balance should reflect 10 deposits of 10.0 under contention");
     }
 }

@@ -1,4 +1,4 @@
-package com.example.kiantask.util.validation;
+package com.example.kiantask.util.validator;
 
 import com.example.kiantask.domain.BankAccount;
 import com.example.kiantask.exceptionHandler.AccountHolderIsNotNullOrEmptyException;

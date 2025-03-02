@@ -19,7 +19,7 @@ public class BankAccount {
     @Column(name = "ACCOUNT_NUMBER", length = 10, unique = true, nullable = false)
     private String accountNumber;
 
-    @Column(name = "ACCOUNT_HOLDER_NAME", length = 100, unique = true)
+    @Column(name = "ACCOUNT_HOLDER_NAME", length = 100, unique = true, nullable = false)
     private String accountHolderName;
 
     @Column(name = "BALANCE", nullable = false)

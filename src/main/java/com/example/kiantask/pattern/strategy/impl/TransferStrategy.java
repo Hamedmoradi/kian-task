@@ -7,6 +7,8 @@ import com.example.kiantask.exceptionHandler.InsufficientFundsInSourceAccountExc
 import com.example.kiantask.pattern.strategy.TransactionStrategy;
 import com.example.kiantask.repository.BankAccountRepository;
 
+import static com.example.kiantask.util.validation.AccountValidator.checkAmount;
+
 public class TransferStrategy implements TransactionStrategy {
     @Override
     public void execute(BankAccountRepository repository, String fromAccountNumber, double amount, String toAccountNumber) {
@@ -17,6 +19,7 @@ public class TransferStrategy implements TransactionStrategy {
         if (sourceAccount.getBalance() < amount) {
             throw new InsufficientFundsInSourceAccountException();
         }
+        checkAmount(amount);
         sourceAccount.setBalance(sourceAccount.getBalance() - amount);
         destinationAccount.setBalance(destinationAccount.getBalance() + amount);
         repository.save(sourceAccount);

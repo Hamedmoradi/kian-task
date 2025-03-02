@@ -126,7 +126,6 @@ public class Bank {
 
     private boolean isRetryable(Exception e) {
         return e instanceof org.springframework.dao.ConcurrencyFailureException ||
-                e instanceof org.springframework.dao.PessimisticLockingFailureException ||
                 e.getMessage().contains("Deadlock detected") ||
                 e.getMessage().contains("Lock wait timeout") ||
                 e.getMessage().contains("could not obtain lock");

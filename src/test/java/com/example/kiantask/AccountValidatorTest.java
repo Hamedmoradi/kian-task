@@ -56,7 +56,6 @@ class AccountValidatorTest {
     @Test
     void testValidateAccountDetailNullAccountHolderName() {
         String accountNumber = "12345";
-        String accountHolderName = null;
         assertThrows(AccountHolderIsNotNullOrEmptyException.class,
                 () -> AccountValidator.validateAccountDetail(accountNumber, null),
                 "Null account holder name should throw AccountHolderIsNotNullOrEmptyException");

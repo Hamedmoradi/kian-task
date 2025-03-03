@@ -3,7 +3,7 @@ package com.example.kiantask;
 import com.example.kiantask.domain.BankAccount;
 import com.example.kiantask.exceptionHandler.AccountNotFoundException;
 import com.example.kiantask.exceptionHandler.DestinationAccountNotFoundException;
-import com.example.kiantask.exceptionHandler.InsufficientFundsInSourceAccountException;
+import com.example.kiantask.exceptionHandler.InsufficientFundsException;
 import com.example.kiantask.pattern.strategy.impl.TransferStrategy;
 import com.example.kiantask.repository.BankAccountRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,7 +100,7 @@ class TransferStrategyTest {
         when(repository.findByAccountNumber(fromAccountNumber)).thenReturn(Optional.of(sourceAccount));
         when(repository.findByAccountNumber(toAccountNumber)).thenReturn(Optional.of(destinationAccount));
 
-        assertThrows(InsufficientFundsInSourceAccountException.class,
+        assertThrows(InsufficientFundsException.class,
                 () -> transferStrategy.execute(repository, fromAccountNumber, amount, toAccountNumber),
                 "Should throw InsufficientFundsInSourceAccountException for insufficient funds");
 

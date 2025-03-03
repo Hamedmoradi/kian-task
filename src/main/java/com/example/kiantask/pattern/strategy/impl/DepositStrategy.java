@@ -11,8 +11,7 @@ public class DepositStrategy implements TransactionStrategy {
     @Override
     public void execute(BankAccountRepository repository, String accountNumber, double amount, String targetAccountNumber) {
         checkAmount(amount);
-        BankAccount account = repository.findByAccountNumber(accountNumber)
-                .orElseThrow(AccountNotFoundException::new);
+        BankAccount account = repository.findByAccountNumber(accountNumber).orElseThrow(AccountNotFoundException::new);
         account.setBalance(account.getBalance() + amount);
         repository.save(account);
     }

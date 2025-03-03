@@ -57,7 +57,7 @@ class BankTests {
 
     @Test
     void testTransfer_InsufficientFunds() {
-        assertThrows(InsufficientFundsInSourceAccountException.class, () -> bank.transfer("456", "123", 150.0));
+        assertThrows(InsufficientFundsException.class, () -> bank.transfer("456", "123", 150.0));
     }
 
     @Test

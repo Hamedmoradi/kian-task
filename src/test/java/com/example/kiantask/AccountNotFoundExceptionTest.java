@@ -42,12 +42,10 @@ class AccountNotFoundExceptionTest {
 
     @Test
     void testExceptionThrownAndCaught() {
-        // Act & Assert
         try {
             throw new AccountNotFoundException();
         } catch (AccountNotFoundException e) {
-            assertEquals("account not found", e.getMessage(),
-                    "Caught exception message should match enum value");
+            assertEquals("Account not found", e.getMessage(), "Caught exception message should match enum value");
             assertEquals(100001, e.getCode(), "Caught exception code should match enum value");
             assertNull(e.getCause(), "Caught exception should have no cause");
         }

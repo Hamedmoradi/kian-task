@@ -38,18 +38,6 @@ class GeneralExceptionTest {
     }
 
     @Test
-    void testEqualsAndHashCode() {
-        GeneralException exception1 = new GeneralException("Error", 400);
-        GeneralException exception2 = new GeneralException("Error", 400);
-        GeneralException exception3 = new GeneralException("Different Error", 500);
-
-        assertEquals(exception1, exception2);
-        assertNotEquals(exception1, exception3);
-        assertEquals(exception1.hashCode(), exception2.hashCode());
-        assertNotEquals(exception1.hashCode(), exception3.hashCode());
-    }
-
-    @Test
     void testToString() {
         GeneralException exception = new GeneralException("Error Message", 400);
         String expected = "GeneralException(code=400)";

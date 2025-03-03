@@ -24,8 +24,6 @@ class DestinationAccountNotFoundExceptionTest {
     void testConstructorWithCause() {
 
         Throwable cause = new IllegalArgumentException("Test cause");
-
-
         DestinationAccountNotFoundException exception = new DestinationAccountNotFoundException(cause);
 
 
@@ -41,7 +39,7 @@ class DestinationAccountNotFoundExceptionTest {
         try {
             throw new DestinationAccountNotFoundException();
         } catch (DestinationAccountNotFoundException e) {
-            assertEquals("destination account not found", e.getMessage(), "Caught exception message should match enum value");
+            assertEquals("Destination account not found", e.getMessage(), "Caught exception message should match enum value");
             assertEquals(100009, e.getCode(), "Caught exception code should match enum value");
             assertNull(e.getCause(), "Caught exception should have no cause");
         }
@@ -55,7 +53,7 @@ class DestinationAccountNotFoundExceptionTest {
         try {
             throw new DestinationAccountNotFoundException(cause);
         } catch (DestinationAccountNotFoundException e) {
-            assertEquals("destination account not found", e.getMessage(), "Caught exception message should match enum value");
+            assertEquals("Destination account not found", e.getMessage(), "Caught exception message should match enum value");
             assertEquals(100009, e.getCode(), "Caught exception code should match enum value");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");

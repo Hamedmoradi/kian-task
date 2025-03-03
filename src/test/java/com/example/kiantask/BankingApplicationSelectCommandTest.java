@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BankingApplicationSelectCommandTest {
+class BankingApplicationSelectCommandTest {
 
     private Bank bank;
     private ByteArrayOutputStream outputStream;
@@ -129,19 +129,5 @@ public class BankingApplicationSelectCommandTest {
         assertFalse(output.contains("Account created!"), "Should not display success message on invalid input");
         verifyNoInteractions(bank);
     }
-
-//    @Test
-//    void testSelectCommandDepositException() {
-//        String input = "12345\n500.0\n";
-//        Scanner scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-//        doThrow(new IllegalArgumentException("Invalid deposit")).when(bank).deposit("12345", 500.0);
-//
-//        BankingApplication.selectCommand(bank, 2, scanner);
-//
-//        String output = outputStream.toString();
-//        assertTrue(output.contains("Error: Invalid deposit"), "Should display exception message");
-//        assertFalse(output.contains("Deposit successful!"), "Should not display success message on exception");
-//        verify(bank, times(1)).deposit("12345", 500.0);
-//    }
 
 }

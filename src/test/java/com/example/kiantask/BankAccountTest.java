@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class BankAccountTest {
+class BankAccountTest {
 
     @Autowired
     private BankAccountRepository repository;
@@ -43,7 +43,7 @@ public class BankAccountTest {
     }
 
     @Test
-    public void testBankAccountCreationAndPersistence() {
+    void testBankAccountCreationAndPersistence() {
         BankAccount account = new BankAccount("12345", "Hamed", 1000.0);
         BankAccount savedAccount = repository.save(account);
         Optional<BankAccount> retrievedAccount = repository.findByAccountNumber("12345");
@@ -58,7 +58,7 @@ public class BankAccountTest {
     }
 
     @Test
-    public void testConstructorWithParameters() {
+    void testConstructorWithParameters() {
         BankAccount account = new BankAccount("67890", "Ali", 500.0);
 
         assertEquals("67890", account.getAccountNumber(), "Account number should be set by constructor");
@@ -68,7 +68,7 @@ public class BankAccountTest {
     }
 
     @Test
-    public void testDefaultConstructorAndSetters() {
+    void testDefaultConstructorAndSetters() {
         BankAccount account = new BankAccount();
 
         account.setAccountNumber("11111");
@@ -83,7 +83,7 @@ public class BankAccountTest {
     }
 
     @Test
-    public void testUniqueAccountNumberConstraint() {
+    void testUniqueAccountNumberConstraint() {
         BankAccount account1 = new BankAccount("22222", "Sara", 300.0);
         BankAccount account2 = new BankAccount("22222", "Eli", 400.0);
         repository.save(account1);
@@ -92,7 +92,7 @@ public class BankAccountTest {
     }
 
     @Test
-    public void testUniqueAccountHolderNameConstraint() {
+    void testUniqueAccountHolderNameConstraint() {
         BankAccount account1 = new BankAccount("33333", "Franak", 500.0);
         BankAccount account2 = new BankAccount("44444", "Franak", 600.0);
         repository.save(account1);
@@ -101,7 +101,7 @@ public class BankAccountTest {
     }
 
     @Test
-    public void testBalancePositiveConstraint() {
+    void testBalancePositiveConstraint() {
         BankAccount account = new BankAccount("55555", "Mori", -100.0);
 
         Set<ConstraintViolation<BankAccount>> violations = validator.validate(account);
@@ -112,7 +112,7 @@ public class BankAccountTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         BankAccount account = new BankAccount("66666", "Hani", 700.0);
         account.setId(42);
 

@@ -14,7 +14,6 @@ import com.example.kiantask.pattern.strategy.impl.TransferStrategy;
 import com.example.kiantask.pattern.strategy.impl.WithdrawalStrategy;
 import com.example.kiantask.repository.BankAccountRepository;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +45,6 @@ public class Bank {
         isAccountExist(accountNumber);
         return repository.save(new BankAccount(accountNumber, accountHolderName, initialBalance));
     }
-
 
 
     @SneakyThrows

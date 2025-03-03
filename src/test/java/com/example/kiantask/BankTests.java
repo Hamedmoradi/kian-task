@@ -46,22 +46,22 @@ public class BankTests {
     }
 
     @Test
-    public void testDeposit_NegativeAmount() {
+    void testDeposit_NegativeAmount() {
         assertThrows(TransactionAmountMustBePositiveException.class, () -> bank.deposit("123", -50.0));
     }
 
     @Test
-    public void testTransfer_SameAccount() {
+    void testTransfer_SameAccount() {
         assertThrows(SourceAndDestinationAccountAreTheSameException.class, () -> bank.transfer("123", "123", 50.0));
     }
 
     @Test
-    public void testTransfer_InsufficientFunds() {
+    void testTransfer_InsufficientFunds() {
         assertThrows(InsufficientFundsInSourceAccountException.class, () -> bank.transfer("456", "123", 150.0));
     }
 
     @Test
-    public void testTransactionLogger_LogsCorrectFormat() throws Exception {
+    void testTransactionLogger_LogsCorrectFormat() throws Exception {
         TransactionLogger logger = new TransactionLogger();
         String accountNumber = "123";
         String transactionType = "DEPOSIT";
@@ -73,15 +73,16 @@ public class BankTests {
         File logFile = new File("transactions.log");
         assertTrue(logFile.exists(), "Transaction log file should be created");
     }
+
     @Test
-    public void testAccountsInserted() {
+    void testAccountsInserted() {
         assertEquals(2, repository.count());
         assertTrue(repository.findByAccountNumber("123").isPresent());
         assertTrue(repository.findByAccountNumber("456").isPresent());
     }
 
     @Test
-    public void testCreateAccount_Success() {
+    void testCreateAccount_Success() {
         BankAccount account = bank.createAccount("789", "Charlie", 300.0);
         assertEquals("789", account.getAccountNumber());
         assertEquals("Charlie", account.getAccountHolderName());
@@ -89,75 +90,75 @@ public class BankTests {
     }
 
     @Test
-    public void testCreateAccount_NullAccountNumber() {
+    void testCreateAccount_NullAccountNumber() {
         AccountNumberIsNotNullOrEmptyException exception = assertThrows(AccountNumberIsNotNullOrEmptyException.class, () -> bank.createAccount(null, "Ali", 100.0));
         assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
-    public void testCreateAccount_EmptyAccountNumber() {
+    void testCreateAccount_EmptyAccountNumber() {
         AccountNumberIsNotNullOrEmptyException exception = assertThrows(AccountNumberIsNotNullOrEmptyException.class, () -> bank.createAccount("", "Ali", 100.0));
         assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
-    public void testCreateAccount_NegativeBalance() {
+    void testCreateAccount_NegativeBalance() {
         jakarta.validation.ConstraintViolationException exception = assertThrows(jakarta.validation.ConstraintViolationException.class, () -> bank.createAccount("789", "Charlie", -50.0));
         assertTrue(exception.getMessage().contains("Balance must be greater than zero"));
     }
 
     @Test
-    public void testCreateAccount_DuplicateAccount() {
+    void testCreateAccount_DuplicateAccount() {
         AccountNumberIsAlreadyExistException exception = assertThrows(AccountNumberIsAlreadyExistException.class, () -> bank.createAccount("123", "Babak", 200.0));
         assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_ALREADY_EXIST_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
-    public void testDeposit_Success() {
+    void testDeposit_Success() {
         bank.deposit("123", 50.0);
         assertEquals(1050.0, bank.getBalance("123"), 0.01);
     }
 
     @Test
-    public void testDeposit_NonExistentAccount() {
+    void testDeposit_NonExistentAccount() {
         AccountNotFoundException exception = assertThrows(AccountNotFoundException.class, () -> bank.deposit("999", 50.0));
         assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
-    public void testWithdraw_Success() {
+    void testWithdraw_Success() {
         bank.withdraw("123", 50.0);
         assertEquals(950.0, bank.getBalance("123"), 0.01);
     }
 
     @Test
-    public void testWithdraw_InsufficientFunds() {
+    void testWithdraw_InsufficientFunds() {
         InsufficientFundsException exception = assertThrows(InsufficientFundsException.class, () -> bank.withdraw("123", 1500.0));
         assertEquals(GeneralExceptionEnums.INSUFFICIENT_FUNDS_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
-    public void testTransfer_Success() {
+    void testTransfer_Success() {
         bank.transfer("123", "456", 50.0);
         assertEquals(950.0, bank.getBalance("123"), 0.01);
         assertEquals(150.0, bank.getBalance("456"), 0.01);
     }
 
     @Test
-    public void testGetBalance_Success() {
+    void testGetBalance_Success() {
         double balance = bank.getBalance("123");
         assertEquals(1000.0, balance, 0.01);
     }
 
     @Test
-    public void testGetBalance_NonExistentAccount() {
+    void testGetBalance_NonExistentAccount() {
         AccountNotFoundException exception = assertThrows(AccountNotFoundException.class, () -> bank.getBalance("999"));
         assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(), exception.getMessage());
     }
 
     @Test
     @Transactional
-    public void testSetBalance_NegativeValue() {
+    void testSetBalance_NegativeValue() {
         BankAccount account = repository.findByAccountNumber("123").get();
         account.setBalance(-50.0);
         assertThrows(jakarta.validation.ConstraintViolationException.class, () -> repository.saveAndFlush(account));
@@ -165,7 +166,7 @@ public class BankTests {
 
     @Test
     @Transactional
-    public void testSetBalance_ZeroValue() {
+    void testSetBalance_ZeroValue() {
         BankAccount account = repository.findByAccountNumber("123").get();
         account.setBalance(0.0);
         assertThrows(jakarta.validation.ConstraintViolationException.class, () -> repository.saveAndFlush(account));

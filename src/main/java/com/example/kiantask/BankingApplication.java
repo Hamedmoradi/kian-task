@@ -16,34 +16,6 @@ public class BankingApplication {
         SpringApplication.run(BankingApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner run(Bank bank, Environment env) {
-        return args -> {
-            if (!java.util.Arrays.asList(env.getActiveProfiles()).contains("test")) {
-                Scanner scanner = new Scanner(System.in);
-                System.out.println("Choose an option: ");
-                while (true) {
-                    displayMenu();
-                    try {
-                        int choice = scanner.nextInt();
-                        scanner.nextLine();
-
-                        selectCommand(bank, choice, scanner);
-                    } catch (InputMismatchException e) {
-                        System.out.println("Error: Please enter a valid number.");
-                        scanner.nextLine();
-                    } catch (IllegalArgumentException | IllegalStateException e) {
-                        System.out.println("Error: " + e.getMessage());
-                        scanner.nextLine();
-                    } catch (Exception e) {
-                        System.out.println("Unexpected error: " + e.getMessage());
-                        scanner.nextLine();
-                    }
-                }
-            }
-        };
-    }
-
     static void selectCommand(Bank bank, int choice, Scanner scanner) {
         switch (choice) {
             case 1:
@@ -94,6 +66,34 @@ public class BankingApplication {
             default:
                 System.out.println("Invalid option! Please choose between 1 and 6.");
         }
+    }
+
+    @Bean
+    public CommandLineRunner run(Bank bank, Environment env) {
+        return args -> {
+            if (!java.util.Arrays.asList(env.getActiveProfiles()).contains("test")) {
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Choose an option: ");
+                while (true) {
+                    displayMenu();
+                    try {
+                        int choice = scanner.nextInt();
+                        scanner.nextLine();
+
+                        selectCommand(bank, choice, scanner);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Error: Please enter a valid number.");
+                        scanner.nextLine();
+                    } catch (IllegalArgumentException | IllegalStateException e) {
+                        System.out.println("Error: " + e.getMessage());
+                        scanner.nextLine();
+                    } catch (Exception e) {
+                        System.out.println("Unexpected error: " + e.getMessage());
+                        scanner.nextLine();
+                    }
+                }
+            }
+        };
     }
 
     private void displayMenu() {

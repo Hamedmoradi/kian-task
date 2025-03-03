@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TransactionTypeEnumTest {
+class TransactionTypeEnumTest {
 
     @Test
-    public void testEnumValues() {
+    void testEnumValues() {
 
         TransactionTypeEnum[] values = TransactionTypeEnum.values();
 
@@ -22,7 +22,7 @@ public class TransactionTypeEnumTest {
     }
 
     @Test
-    public void testGetValue() {
+    void testGetValue() {
 
         assertEquals("TRANSFER", TransactionTypeEnum.TRANSFER.getValue(), "TRANSFER value should match");
         assertEquals("TRANSFER_IN", TransactionTypeEnum.TRANSFER_IN.getValue(), "TRANSFER_IN value should match");
@@ -31,7 +31,7 @@ public class TransactionTypeEnumTest {
     }
 
     @Test
-    public void testValueOf() {
+    void testValueOf() {
 
         assertEquals(TransactionTypeEnum.TRANSFER, TransactionTypeEnum.valueOf("TRANSFER"), "valueOf should return TRANSFER");
         assertEquals(TransactionTypeEnum.TRANSFER_IN, TransactionTypeEnum.valueOf("TRANSFER_IN"), "valueOf should return TRANSFER_IN");
@@ -40,13 +40,13 @@ public class TransactionTypeEnumTest {
     }
 
     @Test
-    public void testValueOfInvalidName() {
+    void testValueOfInvalidName() {
         assertThrows(IllegalArgumentException.class, () -> TransactionTypeEnum.valueOf("INVALID"),
                 "valueOf with invalid name should throw IllegalArgumentException");
     }
 
     @Test
-    public void testEnumToString() {
+    void testEnumToString() {
 
         assertEquals("TRANSFER", TransactionTypeEnum.TRANSFER.toString(), "toString should return enum name TRANSFER");
         assertEquals("TRANSFER_IN", TransactionTypeEnum.TRANSFER_IN.toString(), "toString should return enum name TRANSFER_IN");
@@ -55,7 +55,7 @@ public class TransactionTypeEnumTest {
     }
 
     @Test
-    public void testEnumNameMatchesValue() {
+    void testEnumNameMatchesValue() {
 
         for (TransactionTypeEnum type : TransactionTypeEnum.values()) {
             assertEquals(type.name(), type.getValue(), "Enum name should match its value for " + type);

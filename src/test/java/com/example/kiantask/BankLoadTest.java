@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BankLoadTest {
+class BankLoadTest {
 
     @Autowired
     private Bank bank;
@@ -34,7 +34,7 @@ public class BankLoadTest {
     }
 
     @Test
-    public void testConcurrentDeposits() throws InterruptedException {
+    void testConcurrentDeposits() throws InterruptedException {
         int numThreads = 10;
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         CountDownLatch latch = new CountDownLatch(numThreads);
@@ -61,7 +61,7 @@ public class BankLoadTest {
     }
 
     @Test
-    public void testConcurrentWithdrawals() throws InterruptedException {
+    void testConcurrentWithdrawals() throws InterruptedException {
         int numThreads = 5;
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         CountDownLatch latch = new CountDownLatch(numThreads);
@@ -88,7 +88,7 @@ public class BankLoadTest {
     }
 
     @Test
-    public void testConcurrentTransfers() throws InterruptedException {
+    void testConcurrentTransfers() throws InterruptedException {
         int numThreads = 5;
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         CountDownLatch latch = new CountDownLatch(numThreads);
@@ -117,7 +117,7 @@ public class BankLoadTest {
     }
 
     @Test
-    public void testMixedConcurrentTransactions() throws InterruptedException {
+    void testMixedConcurrentTransactions() throws InterruptedException {
         int numThreads = 10;
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         CountDownLatch latch = new CountDownLatch(numThreads);
@@ -153,7 +153,7 @@ public class BankLoadTest {
     }
 
     @Test
-    public void testRetryOnConcurrencyFailure() throws InterruptedException {
+    void testRetryOnConcurrencyFailure() throws InterruptedException {
         int numThreads = 10;
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         CountDownLatch latch = new CountDownLatch(numThreads);

@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AccountHolderIsNotNullOrEmptyExceptionTest {
+class AccountHolderIsNotNullOrEmptyExceptionTest {
 
     @Test
-    public void testDefaultConstructor() {
+    void testDefaultConstructor() {
         AccountHolderIsNotNullOrEmptyException exception = new AccountHolderIsNotNullOrEmptyException();
         assertNotNull(exception, "Exception should be instantiated");
         assertEquals(GeneralExceptionEnums.ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(),
@@ -20,7 +20,7 @@ public class AccountHolderIsNotNullOrEmptyExceptionTest {
     }
 
     @Test
-    public void testConstructorWithCause() {
+    void testConstructorWithCause() {
 
         Throwable cause = new IllegalArgumentException("Test cause");
         AccountHolderIsNotNullOrEmptyException exception = new AccountHolderIsNotNullOrEmptyException(cause);
@@ -35,7 +35,7 @@ public class AccountHolderIsNotNullOrEmptyExceptionTest {
     }
 
     @Test
-    public void testExceptionThrownAndCaught() {
+    void testExceptionThrownAndCaught() {
 
         try {
             throw new AccountHolderIsNotNullOrEmptyException();
@@ -48,7 +48,7 @@ public class AccountHolderIsNotNullOrEmptyExceptionTest {
     }
 
     @Test
-    public void testExceptionWithCauseThrownAndCaught() {
+    void testExceptionWithCauseThrownAndCaught() {
 
         Throwable cause = new NullPointerException("Null pointer test");
 

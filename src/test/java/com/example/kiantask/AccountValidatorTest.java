@@ -1,10 +1,7 @@
 package com.example.kiantask;
 
 import com.example.kiantask.domain.BankAccount;
-import com.example.kiantask.exceptionHandler.AccountHolderIsNotNullOrEmptyException;
-import com.example.kiantask.exceptionHandler.AccountNumberIsNotNullOrEmptyException;
-import com.example.kiantask.exceptionHandler.InsufficientFundsException;
-import com.example.kiantask.exceptionHandler.TransactionAmountMustBePositiveException;
+import com.example.kiantask.exceptionHandler.*;
 import com.example.kiantask.util.validator.AccountValidator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -146,5 +143,12 @@ class AccountValidatorTest {
         when(account.getBalance()).thenReturn(500.0);
 
         assertDoesNotThrow(() -> AccountValidator.checkBalance(amount, account), "Negative amount should not throw an exception in checkBalance (only checks funds)");
+    }
+
+    @Test
+    void testTransfer_SameAccount() {
+        String sourceAccount = "101010";
+        String destinationAccount = "101010";
+        assertThrows(SourceAndDestinationAccountAreTheSameException.class, () -> AccountValidator.isSourceAndDestinationAreTheSame(sourceAccount, destinationAccount));
     }
 }

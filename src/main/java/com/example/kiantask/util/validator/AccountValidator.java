@@ -1,10 +1,7 @@
 package com.example.kiantask.util.validator;
 
 import com.example.kiantask.domain.BankAccount;
-import com.example.kiantask.exceptionHandler.AccountHolderIsNotNullOrEmptyException;
-import com.example.kiantask.exceptionHandler.AccountNumberIsNotNullOrEmptyException;
-import com.example.kiantask.exceptionHandler.InsufficientFundsException;
-import com.example.kiantask.exceptionHandler.TransactionAmountMustBePositiveException;
+import com.example.kiantask.exceptionHandler.*;
 
 public class AccountValidator {
     public static void validateAccountDetail(String accountNumber, String accountHolderName) {
@@ -25,6 +22,12 @@ public class AccountValidator {
     public static void checkBalance(double amount, BankAccount account) {
         if (account.getBalance() < amount) {
             throw new InsufficientFundsException();
+        }
+    }
+
+    public static void isSourceAndDestinationAreTheSame(String sourceAccount, String destinationAccount) {
+        if (sourceAccount.equals(destinationAccount)) {
+            throw new SourceAndDestinationAccountAreTheSameException();
         }
     }
 }

@@ -23,19 +23,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.example.kiantask.util.validator.AccountValidator.checkAmount;
-import static com.example.kiantask.util.validator.AccountValidator.validateAccountDetail;
+import static com.example.kiantask.util.validator.AccountValidator.*;
 
 @Service
 public class Bank {
-    private final BankAccountRepository repository;
     private final List<TransactionObserver> observers = new ArrayList<>();
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
-    private final ReentrantLock lock = new ReentrantLock(); // Added for synchronization
+    private final BankAccountRepository repository;
+    private final ReentrantLock lock = new ReentrantLock();
 
     public Bank(BankAccountRepository repository) {
-        observers.add(new TransactionLogger());
         this.repository = repository;
+        observers.add(new TransactionLogger());
     }
 
     @Transactional
@@ -50,7 +49,7 @@ public class Bank {
     @SneakyThrows
     public void performTransaction(TransactionStrategy strategy, String sourceAccount, double amount, String destinationAccount, String transactionType) {
         checkAmount(amount);
-        lock.lock(); // Synchronize access to prevent concurrent updates
+        lock.lock();
         try {
             retryTransaction(() -> {
                 strategy.execute(repository, sourceAccount, amount, destinationAccount);
@@ -94,9 +93,7 @@ public class Bank {
     }
 
     public void transfer(String sourceAccount, String destinationAccount, double amount) {
-        if (sourceAccount.equals(destinationAccount)) {
-            throw new SourceAndDestinationAccountAreTheSameException();
-        }
+        isSourceAndDestinationAreTheSame(sourceAccount, destinationAccount);
         performTransaction(new TransferStrategy(), sourceAccount, amount, destinationAccount, TransactionTypeEnum.TRANSFER.getValue());
     }
 
@@ -113,7 +110,7 @@ public class Bank {
                 }
                 try {
                     System.err.println(type + " attempt " + (i + 1) + " failed for account " + accountNumber + " with amount " + amount + " : " + e.getMessage() + " - Retrying...");
-                    Thread.sleep(100 * (i + 1)); // Exponential backoff
+                    Thread.sleep(100 * (i + 1));
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(ie);

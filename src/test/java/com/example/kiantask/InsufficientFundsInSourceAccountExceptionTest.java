@@ -20,7 +20,7 @@ class InsufficientFundsInSourceAccountExceptionTest {
     }
 
     @Test
-    public void testConstructorWithCause() {
+    void testConstructorWithCause() {
 
         Throwable cause = new IllegalArgumentException("Test cause");
 
@@ -34,7 +34,7 @@ class InsufficientFundsInSourceAccountExceptionTest {
     }
 
     @Test
-     void testExceptionThrownAndCaughtWithoutCause() {
+    void testExceptionThrownAndCaughtWithoutCause() {
 
         try {
             throw new InsufficientFundsInSourceAccountException();
@@ -47,7 +47,7 @@ class InsufficientFundsInSourceAccountExceptionTest {
     }
 
     @Test
-     void testExceptionThrownAndCaughtWithCause() {
+    void testExceptionThrownAndCaughtWithCause() {
 
         Throwable cause = new NullPointerException("Null pointer test");
 

@@ -1,4 +1,4 @@
-package com.example.kiantask;
+package com.example.kiantask.exceptionHandlerTests;
 
 import com.example.kiantask.enums.GeneralExceptionEnums;
 import com.example.kiantask.exceptionHandler.AccountNotFoundException;

@@ -5,7 +5,6 @@ import com.example.kiantask.enums.TransactionTypeEnum;
 import com.example.kiantask.exceptionHandler.AccountNotFoundException;
 import com.example.kiantask.exceptionHandler.AccountNumberIsAlreadyExistException;
 import com.example.kiantask.exceptionHandler.AccountNumberIsNotNullOrEmptyException;
-import com.example.kiantask.exceptionHandler.SourceAndDestinationAccountAreTheSameException;
 import com.example.kiantask.pattern.observer.TransactionObserver;
 import com.example.kiantask.pattern.observer.impl.TransactionLogger;
 import com.example.kiantask.pattern.strategy.TransactionStrategy;

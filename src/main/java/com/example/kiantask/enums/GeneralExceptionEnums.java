@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum GeneralExceptionEnums {
     ACCOUNT_NOT_FOUND_EXCEPTION_CODE(100001, "Account not found"),
-    ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE(100002, "Account number cannot be null or empty"),
-    ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE(100003, "Account holder name cannot be null or empty"),
+    ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE(100002, "Account number can not be null or empty"),
+    ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE(100003, "Account holder name can not be null or empty"),
     ACCOUNT_NUMBER_ALREADY_EXIST_EXCEPTION_CODE(100004, "Account number already exists"),
     TRANSACTION_AMOUNT_MUST_BE_POSITIVE_EXCEPTION_CODE(100005, "Transaction amount must be positive"),
     SOURCE_AND_DESTINATION_ACCOUNT_ARE_THE_SAME_EXCEPTION_CODE(100006, "Source and destination account are the same"),

@@ -3,9 +3,13 @@ package com.example.kiantask;
 import com.example.kiantask.enums.GeneralExceptionEnums;
 import com.example.kiantask.exceptionHandler.AccountHolderIsNotNullOrEmptyException;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@ActiveProfiles("test")
 class AccountHolderIsNotNullOrEmptyExceptionTest {
 
     @Test
@@ -40,7 +44,7 @@ class AccountHolderIsNotNullOrEmptyExceptionTest {
         try {
             throw new AccountHolderIsNotNullOrEmptyException();
         } catch (AccountHolderIsNotNullOrEmptyException e) {
-            assertEquals("Account holder name cannot be null or empty", e.getMessage(),
+            assertEquals("Account holder name can not be null or empty", e.getMessage(),
                     "Caught exception message should match");
             assertEquals(GeneralExceptionEnums.ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(), e.getMessage(), "Caught exception code should match");
             assertNull(e.getCause(), "Caught exception should have no cause");
@@ -55,8 +59,7 @@ class AccountHolderIsNotNullOrEmptyExceptionTest {
         try {
             throw new AccountHolderIsNotNullOrEmptyException(cause);
         } catch (AccountHolderIsNotNullOrEmptyException e) {
-            assertEquals("Account holder name cannot be null or empty", e.getMessage(),
-                    "Caught exception message should match");
+            assertEquals("Account holder name can not be null or empty", e.getMessage(), "Caught exception message should match");
             assertEquals(GeneralExceptionEnums.ACCOUNT_HOLDER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(), e.getMessage(), "Caught exception code should match");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");

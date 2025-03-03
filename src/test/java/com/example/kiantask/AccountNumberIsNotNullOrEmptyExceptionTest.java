@@ -3,9 +3,13 @@ package com.example.kiantask;
 import com.example.kiantask.enums.GeneralExceptionEnums;
 import com.example.kiantask.exceptionHandler.AccountNumberIsNotNullOrEmptyException;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@ActiveProfiles("test")
 class AccountNumberIsNotNullOrEmptyExceptionTest {
 
     @Test
@@ -37,7 +41,7 @@ class AccountNumberIsNotNullOrEmptyExceptionTest {
         try {
             throw new AccountNumberIsNotNullOrEmptyException();
         } catch (AccountNumberIsNotNullOrEmptyException e) {
-            assertEquals("Account number cannot be null or empty", e.getMessage(), "Caught exception message should match enum value");
+            assertEquals("Account number can not be null or empty", e.getMessage(), "Caught exception message should match enum value");
             assertEquals(100002, e.getCode(), "Caught exception code should match enum value");
             assertNull(e.getCause(), "Caught exception should have no cause");
         }
@@ -51,7 +55,7 @@ class AccountNumberIsNotNullOrEmptyExceptionTest {
         try {
             throw new AccountNumberIsNotNullOrEmptyException(cause);
         } catch (AccountNumberIsNotNullOrEmptyException e) {
-            assertEquals("Account number cannot be null or empty", e.getMessage(), "Caught exception message should match enum value");
+            assertEquals("Account number can not be null or empty", e.getMessage(), "Caught exception message should match enum value");
             assertEquals(100002, e.getCode(), "Caught exception code should match enum value");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");

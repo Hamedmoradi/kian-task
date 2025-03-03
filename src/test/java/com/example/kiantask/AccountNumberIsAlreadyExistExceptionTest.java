@@ -3,9 +3,13 @@ package com.example.kiantask;
 import com.example.kiantask.enums.GeneralExceptionEnums;
 import com.example.kiantask.exceptionHandler.AccountNumberIsAlreadyExistException;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@ActiveProfiles("test")
 class AccountNumberIsAlreadyExistExceptionTest {
 
     @Test

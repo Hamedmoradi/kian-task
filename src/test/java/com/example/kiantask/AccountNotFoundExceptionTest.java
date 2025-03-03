@@ -3,39 +3,35 @@ package com.example.kiantask;
 import com.example.kiantask.enums.GeneralExceptionEnums;
 import com.example.kiantask.exceptionHandler.AccountNotFoundException;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@ActiveProfiles("test")
 class AccountNotFoundExceptionTest {
 
     @Test
     void testDefaultConstructor() {
-        // Arrange & Act
         AccountNotFoundException exception = new AccountNotFoundException();
 
-        // Assert
         assertNotNull(exception, "Exception should be instantiated");
-        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(),
-                exception.getMessage(), "Message should match enum value");
-        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getCode(),
-                exception.getCode(), "Code should match enum value");
+        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(), exception.getMessage(), "Message should match enum value");
+        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getCode(), exception.getCode(), "Code should match enum value");
         assertNull(exception.getCause(), "Cause should be null in default constructor");
     }
 
     @Test
     void testConstructorWithCause() {
-        // Arrange
+
         Throwable cause = new IllegalStateException("Test cause");
 
-        // Act
         AccountNotFoundException exception = new AccountNotFoundException(cause);
 
-        // Assert
         assertNotNull(exception, "Exception should be instantiated");
-        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(),
-                exception.getMessage(), "Message should match enum value");
-        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getCode(),
-                exception.getCode(), "Code should match enum value");
+        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(), exception.getMessage(), "Message should match enum value");
+        assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getCode(), exception.getCode(), "Code should match enum value");
         assertEquals(cause, exception.getCause(), "Cause should match provided throwable");
         assertEquals("Test cause", exception.getCause().getMessage(), "Cause message should match");
     }
@@ -59,8 +55,7 @@ class AccountNotFoundExceptionTest {
         try {
             throw new AccountNotFoundException(cause);
         } catch (AccountNotFoundException e) {
-            assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(), e.getMessage(),
-                    "Caught exception message should match enum value");
+            assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(), e.getMessage(), "Caught exception message should match enum value");
             assertEquals(100001, e.getCode(), "Caught exception code should match enum value");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");

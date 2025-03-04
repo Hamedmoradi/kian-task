@@ -150,19 +150,19 @@ class BankAccountTest {
 
     @Test
     void testEqualsDifferentAccountNumber() {
-        account2 = new BankAccount("67890", "Alice", 1000.0);
+        account2 = new BankAccount("67890", "Ali", 1000.0);
         assertFalse(account1.equals(account2), "Objects with different account numbers should not be equal");
     }
 
     @Test
     void testEqualsDifferentAccountHolderName() {
-        account2 = new BankAccount("12345", "Bob", 1000.0);
+        account2 = new BankAccount("12345", "BabaK", 1000.0);
         assertFalse(account1.equals(account2), "Objects with different account holder names should not be equal");
     }
 
     @Test
     void testEqualsDifferentBalance() {
-        account2 = new BankAccount("12345", "Alice", 2000.0);
+        account2 = new BankAccount("12345", "Ali", 2000.0);
         assertFalse(account1.equals(account2), "Objects with different balances should not be equal");
     }
 
@@ -186,39 +186,39 @@ class BankAccountTest {
 
     @Test
     void testHashCodeDifferentAccountNumber() {
-        account2 = new BankAccount("67890", "Alice", 1000.0);
+        account2 = new BankAccount("67890", "Ali", 1000.0);
         assertNotEquals(account1.hashCode(), account2.hashCode(), "Objects with different account numbers should have different hashCodes");
     }
 
     @Test
     void testHashCodeDifferentAccountHolderName() {
-        account2 = new BankAccount("12345", "Bob", 1000.0);
+        account2 = new BankAccount("12345", "BabaK", 1000.0);
         assertNotEquals(account1.hashCode(), account2.hashCode(), "Objects with different account holder names should have different hashCodes");
     }
 
     @Test
     void testHashCodeDifferentBalance() {
-        account2 = new BankAccount("12345", "Alice", 2000.0);
+        account2 = new BankAccount("12345", "Ali", 2000.0);
         assertNotEquals(account1.hashCode(), account2.hashCode(), "Objects with different balances should have different hashCodes");
     }
 
     // Tests for BankAccount(String, String, double) constructor
     @Test
     void testConstructorInitializesFields() {
-        BankAccount account = new BankAccount("12345", "Alice", 1000.0);
+        BankAccount account = new BankAccount("12345", "Ali", 1000.0);
 
         assertEquals("12345", account.getAccountNumber(), "Account number should be set by constructor");
-        assertEquals("Alice", account.getAccountHolderName(), "Account holder name should be set by constructor");
+        assertEquals("Ali", account.getAccountHolderName(), "Account holder name should be set by constructor");
         assertEquals(1000.0, account.getBalance(), 0.01, "Balance should be set by constructor");
         assertEquals(0, account.getId(), "ID should be 0 (unset) by constructor");
     }
 
     @Test
     void testConstructorNullAccountNumber() {
-        BankAccount account = new BankAccount(null, "Alice", 1000.0);
+        BankAccount account = new BankAccount(null, "Ali", 1000.0);
 
         assertNull(account.getAccountNumber(), "Account number can be null (JPA validation occurs later)");
-        assertEquals("Alice", account.getAccountHolderName(), "Account holder name should be set");
+        assertEquals("Ali", account.getAccountHolderName(), "Account holder name should be set");
         assertEquals(1000.0, account.getBalance(), 0.01, "Balance should be set");
     }
 
@@ -233,10 +233,10 @@ class BankAccountTest {
 
     @Test
     void testConstructorNegativeBalance() {
-        BankAccount account = new BankAccount("12345", "Alice", -100.0);
+        BankAccount account = new BankAccount("12345", "Ali", -100.0);
 
         assertEquals("12345", account.getAccountNumber(), "Account number should be set");
-        assertEquals("Alice", account.getAccountHolderName(), "Account holder name should be set");
+        assertEquals("Ali", account.getAccountHolderName(), "Account holder name should be set");
         assertEquals(-100.0, account.getBalance(), 0.01, "Balance can be negative (JPA validation occurs later)");
     }
 }

@@ -1,5 +1,6 @@
 package com.example.kiantask.domain;
 
+import com.example.kiantask.util.annotation.Numeric;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ public class BankAccount {
     private int id;
 
     @Column(name = "ACCOUNT_NUMBER", length = 10, unique = true, nullable = false)
+    @Numeric
     private String accountNumber;
 
     @Column(name = "ACCOUNT_HOLDER_NAME", length = 100, unique = true, nullable = false)

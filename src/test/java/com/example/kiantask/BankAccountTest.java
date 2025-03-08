@@ -2,6 +2,7 @@ package com.example.kiantask;
 
 import com.example.kiantask.domain.BankAccount;
 import com.example.kiantask.repository.BankAccountRepository;
+import com.example.kiantask.util.annotation.Numeric;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -40,6 +41,15 @@ class BankAccountTest {
         validator = factory.getValidator();
         account1 = new BankAccount("88888", "Mehdi", 1000.0);
         account2 = new BankAccount("88888", "Mehdi", 1000.0);
+    }
+
+    static class TestEntity {
+        @Numeric
+        private String value;
+
+        public TestEntity(String value) {
+            this.value = value;
+        }
     }
 
     @Test
@@ -238,5 +248,33 @@ class BankAccountTest {
         assertEquals("12345", account.getAccountNumber(), "Account number should be set");
         assertEquals("Ali", account.getAccountHolderName(), "Account holder name should be set");
         assertEquals(-100.0, account.getBalance(), 0.01, "Balance can be negative (JPA validation occurs later)");
+    }
+
+    @Test
+    void testValidNumericString() {
+        TestEntity entity = new TestEntity("12345");
+        Set<ConstraintViolation<TestEntity>> violations = validator.validate(entity);
+        assertEquals(0, violations.size(), "Valid numeric string should pass validation");
+    }
+
+    @Test
+    void testInvalidNumericString() {
+        TestEntity entity = new TestEntity("123abc");
+        Set<ConstraintViolation<TestEntity>> violations = validator.validate(entity);
+        assertEquals(1, violations.size(), "Non-numeric string should fail validation");
+    }
+
+    @Test
+    void testEmptyString() {
+        TestEntity entity = new TestEntity("");
+        Set<ConstraintViolation<TestEntity>> violations = validator.validate(entity);
+        assertEquals(1, violations.size(), "Empty string should fail validation");
+    }
+
+    @Test
+    void testNullValue() {
+        TestEntity entity = new TestEntity(null);
+        Set<ConstraintViolation<TestEntity>> violations = validator.validate(entity);
+        assertEquals(1, violations.size(), "Null value should fail validation");
     }
 }

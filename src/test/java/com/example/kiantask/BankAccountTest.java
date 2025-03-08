@@ -176,7 +176,6 @@ class BankAccountTest {
         assertFalse(account1.equals(account2), "Objects with different balances should not be equal");
     }
 
-    // Tests for hashCode()
     @Test
     void testHashCodeSameObject() {
         assertEquals(account1.hashCode(), account1.hashCode(), "HashCode should be consistent for the same object");
@@ -212,7 +211,6 @@ class BankAccountTest {
         assertNotEquals(account1.hashCode(), account2.hashCode(), "Objects with different balances should have different hashCodes");
     }
 
-    // Tests for BankAccount(String, String, double) constructor
     @Test
     void testConstructorInitializesFields() {
         BankAccount account = new BankAccount("12345", "Ali", 1000.0);

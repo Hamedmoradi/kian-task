@@ -5,15 +5,12 @@ import com.example.kiantask.exceptionHandler.*;
 import com.example.kiantask.util.validator.AccountValidator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@ActiveProfiles("test")
+
 class AccountValidatorTest {
 
     @Test
@@ -21,17 +18,14 @@ class AccountValidatorTest {
 
         String accountNumber = "12345";
         String accountHolderName = "Hamed";
-        assertDoesNotThrow(() -> AccountValidator.validateAccountDetail(accountNumber, accountHolderName),
-                "Valid account number and holder name should not throw an exception");
+        assertDoesNotThrow(() -> AccountValidator.validateAccountDetail(accountNumber, accountHolderName), "Valid account number and holder name should not throw an exception");
     }
 
     @Test
     void testValidateAccountDetailNullAccountNumber() {
 
         String accountHolderName = "Hamed";
-        assertThrows(AccountNumberIsNotNullOrEmptyException.class,
-                () -> AccountValidator.validateAccountDetail(null, accountHolderName),
-                "Null account number should throw AccountNumberIsNotNullOrEmptyException");
+        assertThrows(AccountNumberIsNotNullOrEmptyException.class, () -> AccountValidator.validateAccountDetail(null, accountHolderName), "Null account number should throw AccountNumberIsNotNullOrEmptyException");
     }
 
     @Test

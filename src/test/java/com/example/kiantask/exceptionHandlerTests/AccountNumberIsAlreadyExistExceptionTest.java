@@ -42,7 +42,7 @@ class AccountNumberIsAlreadyExistExceptionTest {
             throw new AccountNumberIsAlreadyExistException();
         } catch (AccountNumberIsAlreadyExistException e) {
             assertEquals("Account number already exists", e.getMessage(), "Caught exception message should match enum value");
-            assertEquals(100004, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_ALREADY_EXIST_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertNull(e.getCause(), "Caught exception should have no cause");
         }
     }
@@ -56,7 +56,7 @@ class AccountNumberIsAlreadyExistExceptionTest {
             throw new AccountNumberIsAlreadyExistException(cause);
         } catch (AccountNumberIsAlreadyExistException e) {
             assertEquals("Account number already exists", e.getMessage(), "Caught exception message should match enum value");
-            assertEquals(100004, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_ALREADY_EXIST_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");
         }

@@ -45,7 +45,7 @@ class InsufficientFundsInSourceAccountExceptionTest {
         } catch (InsufficientFundsInSourceAccountException e) {
             assertEquals("Insufficient funds in source account", e.getMessage(),
                     "Caught exception message should match enum value");
-            assertEquals(100010, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.INSUFFICIENT_FUNDS_IN_SOURCE_ACCOUNT_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertNull(e.getCause(), "Caught exception should have no cause");
         }
     }
@@ -59,7 +59,7 @@ class InsufficientFundsInSourceAccountExceptionTest {
             throw new InsufficientFundsInSourceAccountException(cause);
         } catch (InsufficientFundsInSourceAccountException e) {
             assertEquals("Insufficient funds in source account", e.getMessage(), "Caught exception message should match enum value");
-            assertEquals(100010, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.INSUFFICIENT_FUNDS_IN_SOURCE_ACCOUNT_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");
         }

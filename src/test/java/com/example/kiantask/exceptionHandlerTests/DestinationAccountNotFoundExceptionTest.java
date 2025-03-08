@@ -57,7 +57,7 @@ class DestinationAccountNotFoundExceptionTest {
             throw new DestinationAccountNotFoundException(cause);
         } catch (DestinationAccountNotFoundException e) {
             assertEquals("Destination account not found", e.getMessage(), "Caught exception message should match enum value");
-            assertEquals(100009, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.DESTINATION_ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");
         }

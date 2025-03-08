@@ -42,7 +42,7 @@ class AccountNotFoundExceptionTest {
             throw new AccountNotFoundException();
         } catch (AccountNotFoundException e) {
             assertEquals("Account not found", e.getMessage(), "Caught exception message should match enum value");
-            assertEquals(100001, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertNull(e.getCause(), "Caught exception should have no cause");
         }
     }
@@ -56,7 +56,7 @@ class AccountNotFoundExceptionTest {
             throw new AccountNotFoundException(cause);
         } catch (AccountNotFoundException e) {
             assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getMessage(), e.getMessage(), "Caught exception message should match enum value");
-            assertEquals(100001, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.ACCOUNT_NOT_FOUND_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");
         }

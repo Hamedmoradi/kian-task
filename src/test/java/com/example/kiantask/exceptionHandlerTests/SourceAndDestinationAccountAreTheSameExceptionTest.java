@@ -44,7 +44,7 @@ class SourceAndDestinationAccountAreTheSameExceptionTest {
             throw new SourceAndDestinationAccountAreTheSameException();
         } catch (SourceAndDestinationAccountAreTheSameException e) {
             assertEquals("Source and destination account are the same", e.getMessage(), "Caught exception message should match enum value");
-            assertEquals(100006, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.SOURCE_AND_DESTINATION_ACCOUNT_ARE_THE_SAME_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertNull(e.getCause(), "Caught exception should have no cause");
         }
     }
@@ -58,7 +58,7 @@ class SourceAndDestinationAccountAreTheSameExceptionTest {
             throw new SourceAndDestinationAccountAreTheSameException(cause);
         } catch (SourceAndDestinationAccountAreTheSameException e) {
             assertEquals("Source and destination account are the same", e.getMessage(), "Caught exception message should match enum value");
-            assertEquals(100006, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.SOURCE_AND_DESTINATION_ACCOUNT_ARE_THE_SAME_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");
         }

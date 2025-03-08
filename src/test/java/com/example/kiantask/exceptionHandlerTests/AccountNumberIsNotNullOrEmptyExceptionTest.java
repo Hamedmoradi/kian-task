@@ -42,7 +42,7 @@ class AccountNumberIsNotNullOrEmptyExceptionTest {
             throw new AccountNumberIsNotNullOrEmptyException();
         } catch (AccountNumberIsNotNullOrEmptyException e) {
             assertEquals("Account number can not be null or empty", e.getMessage(), "Caught exception message should match enum value");
-            assertEquals(100002, e.getCode(), "Caught exception code should match enum value");
+            assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getCode(), e.getCode(), "Caught exception code should match enum value");
             assertNull(e.getCause(), "Caught exception should have no cause");
         }
     }
@@ -55,7 +55,7 @@ class AccountNumberIsNotNullOrEmptyExceptionTest {
         try {
             throw new AccountNumberIsNotNullOrEmptyException(cause);
         } catch (AccountNumberIsNotNullOrEmptyException e) {
-            assertEquals("Account number can not be null or empty", e.getMessage(), "Caught exception message should match enum value");
+            assertEquals(GeneralExceptionEnums.ACCOUNT_NUMBER_CAN_NOT_BE_NULL_OR_EMPTY_EXCEPTION_CODE.getMessage(), e.getMessage(), "Caught exception message should match enum value");
             assertEquals(100002, e.getCode(), "Caught exception code should match enum value");
             assertEquals(cause, e.getCause(), "Caught exception cause should match");
             assertEquals("Null pointer test", e.getCause().getMessage(), "Cause message should match");
